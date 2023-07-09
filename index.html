@@ -8,8 +8,8 @@
 
   <body>
     <div class="container">
-      <ul class="comments">
-        <li class="comment">
+      <ul class="comments" id="comments">
+        <li class="comment"> 
           <div class="comment-header">
             <div>Глеб Фокин</div>
             <div>12.02.22 12:18</div>
@@ -21,8 +21,8 @@
           </div>
           <div class="comment-footer">
             <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
+              <span class="likes-counter" id="likes-counter">3</span>
+              <button class="like-button" id="like-button"></button>
             </div>
           </div>
         </li>
@@ -48,24 +48,26 @@
         <input
           type="text"
           class="add-form-name"
+          id="add-form-name"
           placeholder="Введите ваше имя"
         />
         <textarea
           type="textarea"
           class="add-form-text"
+          id="add-form-text"
           placeholder="Введите ваш коментарий"
           rows="4"
         ></textarea>
         <div class="add-form-row">
-          <button class="add-form-button">Написать</button>
+          <button class="add-form-button" id="add-form-button">Написать</button>
+          <button class="del-form-button" id="delete-comment-button">Удалить последний комментарий</button>
         </div>
       </div>
     </div>
   </body>
 
-  <script>
-    "use strict";
-    // Код писать здесь
-    console.log("It works!");
-  </script>
+  <script src="script.js"></script>
+  </body>
 </html>
+
+
