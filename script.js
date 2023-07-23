@@ -42,11 +42,16 @@ const fetchAndLogComments = (firstStart) => {
       if (firstStart) {
         loadingCommentsElement.style.display = "none";
       }
+    })
+    .catch(() => {
+      loadingCommentsElement.textContent = "Интернет пропал(";
     });
 };
 
 // Добавление комментария
 const addComment = (nameValue, textValue) => {
+  loadingCommentsElement.style.display = "none";
+  loadingCommentElement.textContent = "Комментарий добавляется...";
   loadingCommentElement.style.display = "block";
   addForm.style.display = "none";
 
@@ -66,14 +71,49 @@ const addComment = (nameValue, textValue) => {
         .replaceAll(/#([^#]+)#/g, "<div class='quote'>$1</div>"),
       likes: 0,
       isLiked: false,
+      forceError: true,
     }),
   })
-    .then(() => {
-      return fetchAndLogComments(false);
+    .then((response) => {
+      if (response.status === 400) {
+        throw new Error("Мало символов");
+      }
+      if (response.status === 500) {
+        throw new Error("Сервер упал");
+      } else {
+        return fetchAndLogComments(false);
+      }
     })
     .then(() => {
       loadingCommentElement.style.display = "none";
       addForm.style.display = "flex";
+
+      //Обнуление полей ввода
+      nameElement.value = "";
+      textElement.value = "";
+
+      //Обнуление кнопки
+      buttonElement.disabled = true;
+      buttonElement.classList.add("button-error");
+    })
+    .catch((error) => {
+      // Если мало символов
+      if (error.message === "Мало символов") {
+        loadingCommentElement.textContent = "Мало символов";
+        loadingCommentElement.style.display = "block";
+        setTimeout(function () {
+          //Формы
+          addForm.style.display = "flex";
+          loadingCommentElement.style.display = "none";
+        }, 1200);
+      }
+      // Если сервер упал
+      else if (error.message === "Сервер упал") {
+        addComment(nameValue, textValue);
+      } else {
+        loadingCommentElement.textContent = "Интернет пропал(";
+        addForm.style.display = "flex";
+      }
     });
 };
 
@@ -206,14 +246,6 @@ buttonElement.addEventListener("click", () => {
   }
 
   addComment(nameElement.value, textElement.value);
-
-  //Обнуление кнопки
-  buttonElement.disabled = true;
-  buttonElement.classList.add("button-error");
-
-  //Обнуление полей ввода
-  nameElement.value = "";
-  textElement.value = "";
 });
 
 //Начальное отключение кнопки
